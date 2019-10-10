@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -42,7 +43,6 @@ import cn.sanenen.handler.MessageReceiveHandler;
 import cn.sanenen.service.AtomicUtil;
 import cn.sanenen.service.ConvertService;
 import cn.sanenen.service.SignUtil;
-import javax.swing.JTabbedPane;
 
 public class MainWindow {
 
@@ -52,7 +52,6 @@ public class MainWindow {
 	public static boolean isCanSend = true;
 	private long sendLastNum;
 	private long responseLastNum;
-	
 
 	public static JButton button_connect;
 	public static JButton button_unconnect;
@@ -114,7 +113,7 @@ public class MainWindow {
 			}
 		});
 		CronUtil.start();
-		
+
 		frame = new JFrame("123456");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setFont(new Font("Consolas", Font.PLAIN, 12));
@@ -130,7 +129,7 @@ public class MainWindow {
 		panel2.setLayout(null);
 		tabbedPane.addTab("CMPP20", panel);
 		tabbedPane.addTab("HTTP", panel2);
-//		contentPane.add(panel, BorderLayout.CENTER);
+		// contentPane.add(panel, BorderLayout.CENTER);
 		// 连接信息等输入框
 		initText();
 		// 计数相关
@@ -171,7 +170,7 @@ public class MainWindow {
 		lbls = new JLabel("响应速度:0/s");
 		lbls.setBounds(543, 205, 148, 31);
 		panel.add(lbls);
-		
+
 		label_daxie = new JLabel("");
 		label_daxie.setBounds(396, 286, 270, 21);
 		panel.add(label_daxie);
@@ -182,15 +181,15 @@ public class MainWindow {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(209, 61, 281, 83);
 		panel.add(scrollPane);
-		
+
 		checkBox_randomContent = new JCheckBox("内容增加随机变量");
 		checkBox_randomContent.setBounds(209, 231, 148, 23);
 		panel.add(checkBox_randomContent);
-		
+
 		checkBox_randomMobile = new JCheckBox("随机手机号码");
 		checkBox_randomMobile.setBounds(209, 259, 148, 23);
 		panel.add(checkBox_randomMobile);
-		
+
 		label_msgShow = new JLabel("当前字数:0,短信条数:0");
 		label_msgShow.setBounds(219, 154, 225, 15);
 		panel.add(label_msgShow);
@@ -204,11 +203,11 @@ public class MainWindow {
 					leng += 8;
 					txt += "00000000";
 				}
-				label_msgShow.setText(StrUtil.format("当前字数:{},短信条数:{}", leng,SignUtil.spliteMsg(txt)));
+				label_msgShow.setText(StrUtil.format("当前字数:{},短信条数:{}", leng, SignUtil.spliteMsg(txt)));
 			}
 		});
 		scrollPane.setViewportView(textArea_content);
-		textArea_content.setText("【易信科技】我是短信内容");
+		textArea_content.setText("【哈工大机器人】我是短信内容");
 		textArea_content.setTabSize(0);
 		textArea_content.setWrapStyleWord(true);
 		textArea_content.setLineWrap(true);
@@ -219,18 +218,17 @@ public class MainWindow {
 
 		textArea_mobile = new JTextArea();
 		scrollPane_1.setViewportView(textArea_mobile);
-		textArea_mobile.setText("19956596675");
+		textArea_mobile.setText("16655169698");
 		textArea_mobile.setWrapStyleWord(true);
 		textArea_mobile.setTabSize(0);
 		textArea_mobile.setLineWrap(true);
-
 
 		checkBox_manySend = new JCheckBox("循环发送");
 		checkBox_manySend.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				if (checkBox_manySend.isSelected()) {
 					textField_manySendCount.setEditable(true);
-				}else {
+				} else {
 					textField_manySendCount.setEditable(false);
 				}
 			}
@@ -245,7 +243,7 @@ public class MainWindow {
 				String text = textField_manySendCount.getText();
 				if (StrUtil.isNotBlank(text)) {
 					label_daxie.setText(NumberChineseFormater.format(Double.parseDouble(text), false));
-				}else {
+				} else {
 					label_daxie.setText("");
 				}
 			}
@@ -254,13 +252,13 @@ public class MainWindow {
 		textField_manySendCount.setBounds(291, 286, 95, 21);
 		panel.add(textField_manySendCount);
 		textField_manySendCount.setColumns(10);
-		
+
 		JButton button_clear = new JButton("清零");
 		button_clear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				sendLastNum = 0;
 				responseLastNum = 0;
-				lebel_sendCount.setText("发送数量:0"); 
+				lebel_sendCount.setText("发送数量:0");
 				label_reponseCount.setText("响应数量:0");
 				label_sucCount.setText("提交成功:0");
 				label_failCount.setText("提交失败:0");
@@ -272,8 +270,8 @@ public class MainWindow {
 		button_clear.setBackground(SystemColor.controlHighlight);
 		button_clear.setBounds(543, 263, 72, 31);
 		panel.add(button_clear);
-		
-//		panel.add(tabbedPane);
+
+		// panel.add(tabbedPane);
 
 	}
 
@@ -317,7 +315,7 @@ public class MainWindow {
 		panel.add(label_2);
 
 		textField_pwd = new JTextField();
-		textField_pwd.setText("Aa123456");
+		textField_pwd.setText("123456");
 		textField_pwd.setColumns(10);
 		textField_pwd.setBounds(84, 147, 109, 21);
 		panel.add(textField_pwd);
@@ -338,6 +336,7 @@ public class MainWindow {
 		panel.add(label_5);
 
 		textField_spnum = new JTextField();
+		textField_spnum.setText("106909009002");
 		textField_spnum.setColumns(10);
 		textField_spnum.setBounds(84, 231, 109, 21);
 		panel.add(textField_spnum);
@@ -455,10 +454,9 @@ public class MainWindow {
 		client.setChartset(Charset.forName("utf-8"));
 		client.setRetryWaitTimeSec((short) 30);
 		client.setUseSSL(false);
-		client.setMaxRetryCnt((short)0);
+		client.setMaxRetryCnt((short) 0);
 		client.setReSendFailMsg(false);
 		client.setSupportLongmsg(SupportLongMessage.BOTH);
-		client.setIdleTimeSec((short) 10);
 		List<BusinessHandlerInterface> clienthandlers = new ArrayList<BusinessHandlerInterface>();
 		clienthandlers.add(new MessageReceiveHandler());
 		// clienthandlers.add( new SessionConnectedHandler());
@@ -504,7 +502,7 @@ public class MainWindow {
 									}
 								}
 							}
-							MainWindow.lebel_sendCount.setText(StrUtil.format("发送数量:{}",AtomicUtil.sendCount.get()));
+							MainWindow.lebel_sendCount.setText(StrUtil.format("发送数量:{}", AtomicUtil.sendCount.get()));
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -519,7 +517,7 @@ public class MainWindow {
 					ConvertService.sendSms(tmpmobile, contStr, id);
 					AtomicUtil.sendCount.incrementAndGet();
 				}
-				MainWindow.lebel_sendCount.setText(StrUtil.format("发送数量:{}",AtomicUtil.sendCount.get()));
+				MainWindow.lebel_sendCount.setText(StrUtil.format("发送数量:{}", AtomicUtil.sendCount.get()));
 			}
 		}
 	}

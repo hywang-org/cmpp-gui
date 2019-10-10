@@ -29,14 +29,16 @@ public class MessageReceiveHandler extends AbstractBusinessHandler {
 		}
 		ctx.fireUserEventTriggered(evt);
 	}
-	
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		// System.out.println(msg);
 		if (msg instanceof CmppDeliverRequestMessage) {
 			CmppDeliverRequestMessage e = (CmppDeliverRequestMessage) msg;
-			Console.log("222:",new String(e.getMsgContentBytes(),"iso-10646-ucs-2"));
+			Console.log("111:", e);
+			Console.log("222:", new String(e.getMsgContentBytes(), "iso-10646-ucs-2"));
+			System.out.println("client CmppDeliverRequestMessage = " + e);
+			System.out.println("client CmppDeliverRequestMessage serviceId = " + e.getServiceid());
 			CmppDeliverResponseMessage responseMessage = new CmppDeliverResponseMessage(e.getHeader().getSequenceId());
 			MainWindow.label_reportCount.setText(StrUtil.format("报告数量:{}", AtomicUtil.reportCount.incrementAndGet()));
 			responseMessage.setResult(0);
@@ -44,7 +46,7 @@ public class MessageReceiveHandler extends AbstractBusinessHandler {
 			// cnt.incrementAndGet();
 
 		} else if (msg instanceof CmppDeliverResponseMessage) {
-//			CmppDeliverResponseMessage e = (CmppDeliverResponseMessage) msg;
+			// CmppDeliverResponseMessage e = (CmppDeliverResponseMessage) msg;
 
 		} else if (msg instanceof CmppSubmitRequestMessage) {
 			CmppSubmitRequestMessage e = (CmppSubmitRequestMessage) msg;
@@ -54,12 +56,14 @@ public class MessageReceiveHandler extends AbstractBusinessHandler {
 			ctx.channel().writeAndFlush(resp);
 		} else if (msg instanceof CmppSubmitResponseMessage) {
 			CmppSubmitResponseMessage e = (CmppSubmitResponseMessage) msg;
+			System.out.println("client CmppSubmitResponseMessage = " + msg);
 			MainWindow.label_reponseCount.setText(StrUtil.format("响应数量:{}", AtomicUtil.reponseCount.incrementAndGet()));
 			long result = e.getResult();
 			if (result == 0) {
 				MainWindow.label_sucCount.setText(StrUtil.format("提交成功:{}", AtomicUtil.sucCount.incrementAndGet()));
-			}else {
-				MainWindow.label_reponseCount.setText(StrUtil.format("提交失败:{}", AtomicUtil.failCount.incrementAndGet()));
+			} else {
+				MainWindow.label_reponseCount
+						.setText(StrUtil.format("提交失败:{}", AtomicUtil.failCount.incrementAndGet()));
 			}
 		} else {
 			ctx.fireChannelRead(msg);

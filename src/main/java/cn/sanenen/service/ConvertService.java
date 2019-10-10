@@ -12,31 +12,36 @@ import io.netty.channel.ChannelFuture;
 
 /**
  * 发送服务类 2
- * @author sun
- * 2019年4月23日 下午2:25:34
+ * 
+ * @author sun 2019年4月23日 下午2:25:34
  */
 public class ConvertService {
-	
+
 	public static void sendSms(String mobile, String content, String id) {
-		
+
 		CmppSubmitRequestMessage msg = new CmppSubmitRequestMessage();
 		msg.setDestterminalId(mobile);
 		msg.setLinkID("0000");
 		msg.setMsgContent(content);
 		msg.setRegisteredDelivery((short) 1);
-		msg.setMsgid(new MsgId());
+		msg.setServiceId("hello");
+		MsgId msgId = new MsgId();
+		System.out.println("client msgId = " + msgId);
+		msg.setMsgid(msgId);
 		msg.setServiceId("");
-		msg.setSrcId("10690427969010");
-		msg.setMsgsrc("109010");
+		msg.setSrcId("106909009002");
+		msg.setMsgsrc("109002");
+		System.out.println("send");
 		EndpointConnector<?> connector = EndpointManager.INS.getEndpointConnector(id);
 		while (true) {
 			ChannelFuture write = connector.asynwrite(msg);
-			if (write!=null) {
+			if (write != null) {
 				break;
-			}else {
+			} else {
 				ThreadUtil.sleep(10);
 			}
-		};
+		}
+		;
 	}
 
 	public static String getMobile() {
