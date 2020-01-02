@@ -1,13 +1,22 @@
 package cn.sanenen.service;
 
+import java.awt.event.ActionEvent;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.zx.sms.codec.cmpp.msg.CmppSubmitRequestMessage;
 import com.zx.sms.common.util.MsgId;
 import com.zx.sms.connect.manager.EndpointConnector;
 import com.zx.sms.connect.manager.EndpointManager;
+import com.zx.sms.connect.manager.EndpointEntity.SupportLongMessage;
+import com.zx.sms.connect.manager.cmpp.CMPPClientEndpointEntity;
+import com.zx.sms.handler.api.BusinessHandlerInterface;
 
 import cn.hutool.core.thread.ThreadUtil;
+import cn.sanenen.entity.Channel;
+import cn.sanenen.handler.MessageReceiveHandler;
 import io.netty.channel.ChannelFuture;
 
 /**
@@ -16,23 +25,14 @@ import io.netty.channel.ChannelFuture;
  * @author sun 2019年4月23日 下午2:25:34
  */
 public class ConvertService {
+	
+	private final static EndpointManager manager = EndpointManager.INS;
 
-	public static void sendSms(String mobile, String content, String id) {
+	public static void sendSms(CmppSubmitRequestMessage msg) {
 
-		CmppSubmitRequestMessage msg = new CmppSubmitRequestMessage();
-		msg.setDestterminalId(mobile);
-		msg.setLinkID("0000");
-		msg.setMsgContent(content);
-		msg.setRegisteredDelivery((short) 1);
-		msg.setServiceId("hello");
 		MsgId msgId = new MsgId();
-		System.out.println("client msgId = " + msgId);
 		msg.setMsgid(msgId);
-		msg.setServiceId("");
-		msg.setSrcId("106909009002");
-		msg.setMsgsrc("109002");
-		System.out.println("send");
-		EndpointConnector<?> connector = EndpointManager.INS.getEndpointConnector(id);
+		EndpointConnector<?> connector = EndpointManager.INS.getEndpointConnector(msg.getSrcId());
 		while (true) {
 			ChannelFuture write = connector.asynwrite(msg);
 			if (write != null) {
@@ -41,7 +41,39 @@ public class ConvertService {
 				ThreadUtil.sleep(10);
 			}
 		}
-		;
+	}
+	
+	public static void actionPerformed(ActionEvent e) {
+		// 连接断开
+		manager.close();
+	}
+	
+	public static void connect(Channel channle) {
+		CMPPClientEndpointEntity client = new CMPPClientEndpointEntity();
+		client.setId(channle.getAccessNo());
+		client.setHost(channle.getIp());
+		client.setPort(channle.getPort());
+		client.setUserName(channle.getAccessNo());
+		client.setPassword(channle.getLoginPwd());
+		client.setServiceId(channle.getAccessNo());
+		client.setMaxChannels(Short.parseShort("1"));
+		client.setVersion(channle.getCmppVersion().shortValue());
+		client.setWriteLimit(channle.getSpeedLimit());
+
+		client.setChartset(Charset.forName("utf-8"));
+		client.setRetryWaitTimeSec((short) 30);
+		client.setUseSSL(false);
+		client.setMaxRetryCnt((short) 0);
+		client.setReSendFailMsg(false);
+		client.setSupportLongmsg(SupportLongMessage.BOTH);
+		List<BusinessHandlerInterface> clienthandlers = new ArrayList<BusinessHandlerInterface>();
+		clienthandlers.add(new MessageReceiveHandler());
+		client.setBusinessHandlerSet(clienthandlers);
+
+		manager.addEndpointEntity(client);
+		ThreadUtil.sleep(1000);
+		for (int i = 0; i < client.getMaxChannels(); i++)
+			manager.openEndpoint(client);
 	}
 
 	public static String getMobile() {
